@@ -3,342 +3,295 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minecraft Server</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Server Info</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #0d0f0e;
-    --surface: #161a17;
-    --border: #252c27;
+    --bg: #111;
+    --surface: #1a1a1a;
+    --surface-2: #222;
+    --border: #2a2a2a;
     --green: #4ade80;
-    --green-dim: #22c55e;
-    --green-dark: #14532d;
-    --green-glow: rgba(74, 222, 128, 0.08);
-    --text: #e8f0eb;
-    --muted: #7a9080;
-    --mono: 'Space Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
+    --orange: #fb923c;
+    --text: #f0f0f0;
+    --muted: #888;
+    --warn-bg: #2a1f10;
+    --warn-border: #4a3520;
+    --warn-text: #f5b56a;
   }
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: var(--sans);
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 3rem 1.5rem 4rem;
-    position: relative;
-    overflow-x: hidden;
+    justify-content: center;
+    padding: 2.5rem 1.25rem 4rem;
+    line-height: 1.5;
   }
-  body::before {
-    content: '';
-    position: fixed;
-    top: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    height: 400px;
-    background: radial-gradient(ellipse, rgba(74,222,128,0.07) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-  .wrapper {
-    width: 100%;
-    max-width: 560px;
-    position: relative;
-    z-index: 1;
-  }
-  .logo {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
-    letter-spacing: 0.15em;
+  .wrapper { width: 100%; max-width: 480px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .intro { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; }
+  .section { margin-bottom: 1.75rem; }
+  .label {
+    font-size: 0.75rem;
     text-transform: uppercase;
-    margin-bottom: 2.5rem;
-    opacity: 0.7;
-  }
-  h1 {
-    font-family: var(--mono);
-    font-size: clamp(1.6rem, 5vw, 2.2rem);
-    font-weight: 700;
-    line-height: 1.15;
-    margin-bottom: 0.5rem;
-    color: var(--text);
-  }
-  h1 span {
-    color: var(--green);
-  }
-  .subtitle {
+    letter-spacing: 0.08em;
     color: var(--muted);
-    font-size: 0.95rem;
-    margin-bottom: 2.5rem;
-    line-height: 1.6;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
   }
-  .card {
+  /* Countdown */
+  .countdown-card {
+    background: linear-gradient(180deg, #1c2920 0%, #161f1a 100%);
+    border: 1px solid #2d4636;
+    border-radius: 12px;
+    padding: 1.25rem 1.1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .countdown-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green);
+    font-weight: 600;
+    margin-bottom: 0.85rem;
+  }
+  .countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+  .cd-unit {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.6rem 0.3rem;
+  }
+  .cd-num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  .cd-suffix {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-top: 0.2rem;
+    font-weight: 500;
+  }
+  .countdown-when {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.85rem;
+  }
+  .countdown-live {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--green);
+    padding: 0.5rem 0;
+  }
+  /* Boxes & Buttons */
+  .box {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    transition: border-color 0.2s;
-  }
-  .card:hover {
-    border-color: #3a4a3d;
-  }
-  .card-label {
-    font-size: 11px;
-    font-family: var(--mono);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    margin-bottom: 0.6rem;
-  }
-  .ip-row {
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.75rem;
   }
-  .ip-text {
-    font-family: var(--mono);
-    font-size: 1.3rem;
-    font-weight: 700;
+  .box-value {
+    font-family: 'Inter', monospace;
+    font-size: 1.05rem;
+    font-weight: 600;
     color: var(--green);
-    letter-spacing: 0.02em;
+    word-break: break-all;
   }
+  .box-value.code { color: var(--orange); letter-spacing: 0.05em; }
   .copy-btn {
-    background: var(--green-glow);
-    border: 1px solid rgba(74,222,128,0.25);
-    color: var(--green);
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    padding: 0.45rem 0.9rem;
+    background: transparent;
+    border: 1px solid #333;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.45rem 0.85rem;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.15s;
-    white-space: nowrap;
     flex-shrink: 0;
   }
-  .copy-btn:hover {
-    background: rgba(74,222,128,0.15);
-    border-color: rgba(74,222,128,0.5);
-  }
-  .copy-btn.copied {
-    color: #86efac;
-    border-color: rgba(134,239,172,0.4);
-  }
-  .btn {
+  .copy-btn:hover { background: #2a2a2a; border-color: #444; }
+  .copy-btn.copied { color: var(--green); border-color: rgba(74,222,128,0.4); }
+  .btn-link {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    justify-content: space-between;
+    width: 100%;
+    background: var(--green);
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: 10px;
+    margin-top: 0.6rem;
+    transition: opacity 0.15s;
+  }
+  .btn-link:hover { opacity: 0.9; }
+  .btn-link .arrow { font-size: 1rem; }
+  .btn-sub {
+    display: block;
+    font-size: 0.72rem;
+    color: rgba(0,0,0,0.6);
+    font-weight: 500;
+    margin-top: 1px;
+  }
+  .warning {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .warning-title {
+    color: var(--warn-text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+  .warning-text {
+    color: #c9a574;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .btn-fix {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem 1.5rem;
     color: var(--text);
     text-decoration: none;
-    font-family: var(--sans);
-    font-size: 0.95rem;
     font-weight: 500;
-    cursor: pointer;
+    font-size: 0.92rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: 10px;
+    margin-top: 0.75rem;
     transition: all 0.15s;
-    margin-bottom: 1rem;
   }
-  .btn:hover {
-    border-color: rgba(74,222,128,0.4);
-    background: var(--green-glow);
-    color: var(--green);
-  }
-  .btn-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 18px;
-  }
-  .btn-icon.orange {
-    background: rgba(251,146,60,0.12);
-    border: 1px solid rgba(251,146,60,0.2);
-  }
-  .btn-icon.green {
-    background: var(--green-glow);
-    border: 1px solid rgba(74,222,128,0.2);
-  }
-  .btn-meta {
-    flex: 1;
-    text-align: left;
-  }
-  .btn-title {
-    display: block;
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-  .btn-sub {
-    display: block;
-    font-size: 0.78rem;
+  .btn-fix:hover { border-color: var(--warn-border); background: #1f1a14; }
+  .fix-steps {
     color: var(--muted);
-    font-weight: 400;
-    margin-top: 1px;
+    font-size: 0.85rem;
+    margin-top: 0.85rem;
+    padding-left: 1.2rem;
   }
-  .btn-arrow {
-    color: var(--muted);
-    font-size: 0.9rem;
-    transition: transform 0.15s, color 0.15s;
-  }
-  .btn:hover .btn-arrow {
-    transform: translateX(3px);
-    color: var(--green);
-  }
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 1.5rem 0;
-  }
-  .help-section {
-    margin-top: 2rem;
-  }
-  .help-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-  .steps {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  .step {
-    display: flex;
-    gap: 0.75rem;
-    align-items: flex-start;
-    font-size: 0.88rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-  .step-num {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--green);
-    background: var(--green-glow);
-    border: 1px solid rgba(74,222,128,0.2);
-    border-radius: 4px;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .footer {
-    margin-top: 3rem;
-    font-size: 0.75rem;
-    color: #3d5040;
-    font-family: var(--mono);
-    text-align: center;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  .online-dot {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    background: var(--green);
-    border-radius: 50%;
-    margin-right: 6px;
-    animation: pulse 2s infinite;
-  }
-  .status-line {
-    display: flex;
-    align-items: center;
-    font-size: 0.78rem;
-    color: var(--green);
-    margin-top: 0.4rem;
-    font-family: var(--mono);
-    opacity: 0.7;
-  }
+  .fix-steps li { margin-bottom: 0.3rem; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 </style>
 </head>
 <body>
 <div class="wrapper">
-  <div class="logo">// Minecraft Server</div>
-  <h1>Join our<br><span>Server.</span></h1>
-  <p class="subtitle">Modded Minecraft · CurseForge Modpack</p>
-  <div class="card">
-    <div class="card-label">Server IP</div>
-    <div class="ip-row">
-      <span class="ip-text" id="ip-display">213.239.195.13:25603</span>
-      <button class="copy-btn" onclick="copyIP()" id="copy-btn">KOPIEREN</button>
-    </div>
-    <div class="status-line">
-      <span class="online-dot"></span>online
+  <h1>Server Info</h1>
+  <p class="intro">Alles was du brauchst um zu joinen.</p>
+  <!-- Countdown -->
+  <div class="countdown-card">
+    <div class="countdown-label">Server startet in</div>
+    <div id="cd-content">
+      <div class="countdown-grid">
+        <div class="cd-unit"><div class="cd-num" id="cd-d">--</div><div class="cd-suffix">Tage</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cd-h">--</div><div class="cd-suffix">Std</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cd-m">--</div><div class="cd-suffix">Min</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cd-s">--</div><div class="cd-suffix">Sek</div></div>
+      </div>
+      <div class="countdown-when">1. Mai 2026 · 12:00 Uhr</div>
     </div>
   </div>
-  <div class="divider"></div>
-  <a href="https://www.curseforge.com/minecraft/share/ckHtknE2" target="_blank" class="btn">
-    <div class="btn-icon orange">📦</div>
-    <div class="btn-meta">
-      <span class="btn-title">Modpack herunterladen</span>
-      <span class="btn-sub">CurseForge · Code: ckHtknE2</span>
-    </div>
-    <span class="btn-arrow">→</span>
-  </a>
-  <a href="./kubejs-fix.tar.gz" download class="btn">
-    <div class="btn-icon green">🔧</div>
-    <div class="btn-meta">
-      <span class="btn-title">KubeJS Fix herunterladen</span>
-      <span class="btn-sub">Nur nötig wenn KubeJS-Fehler erscheint</span>
-    </div>
-    <span class="btn-arrow">↓</span>
-  </a>
-  <div class="help-section">
-    <div class="help-title">// KubeJS Fehler – so beheben</div>
-    <div class="steps">
-      <div class="step">
-        <span class="step-num">1</span>
-        <span>KubeJS Fix oben herunterladen</span>
-      </div>
-      <div class="step">
-        <span class="step-num">2</span>
-        <span>Archiv entpacken</span>
-      </div>
-      <div class="step">
-        <span class="step-num">3</span>
-        <span>Inhalt in euren Minecraft-Spielordner kopieren und Dateien überschreiben</span>
-      </div>
-      <div class="step">
-        <span class="step-num">4</span>
-        <span>Minecraft neu starten – fertig</span>
-      </div>
+  <div class="section">
+    <div class="label">1. Server IP</div>
+    <div class="box">
+      <span class="box-value">213.239.195.13:25603</span>
+      <button class="copy-btn" onclick="copyText('213.239.195.13:25603', this)">Kopieren</button>
     </div>
   </div>
-  <div class="footer">// viel spaß</div>
+  <div class="section">
+    <div class="label">2. Modpack installieren</div>
+    <div class="box">
+      <span class="box-value code">ckHtknE2</span>
+      <button class="copy-btn" onclick="copyText('ckHtknE2', this)">Code kopieren</button>
+    </div>
+    <a href="https://www.curseforge.com/minecraft/share/ckHtknE2" target="_blank" rel="noopener" class="btn-link">
+      <span>
+        Auf CurseForge downloaden
+        <span class="btn-sub">öffnet direkt die Modpack-Seite</span>
+      </span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+  <hr>
+  <div class="section">
+    <div class="warning">
+      <div class="warning-title">⚠ Nur lesen wenn KubeJS-Fehler kommt</div>
+      <div class="warning-text">
+        Beim Starten alles ok? Dann brauchst du das hier <strong>nicht</strong>. Nur wenn beim Laden ein KubeJS-Error auftaucht, machst du folgendes:
+      </div>
+    </div>
+    <ol class="fix-steps">
+      <li>Datei unten herunterladen</li>
+      <li>Archiv entpacken</li>
+      <li>Inhalt in deinen Minecraft-Spielordner einfügen und überschreiben</li>
+      <li>Minecraft neu starten</li>
+    </ol>
+    <a href="./kubejs-fix.tar.gz" download class="btn-fix">
+      <span>KubeJS-Fix herunterladen</span>
+      <span class="arrow">↓</span>
+    </a>
+  </div>
 </div>
 <script>
-function copyIP() {
-  const ip = '213.239.195.13:25603';
-  navigator.clipboard.writeText(ip).then(() => {
-    const btn = document.getElementById('copy-btn');
-    btn.textContent = 'KOPIERT ✓';
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Kopiert ✓';
     btn.classList.add('copied');
     setTimeout(() => {
-      btn.textContent = 'KOPIEREN';
+      btn.textContent = original;
       btn.classList.remove('copied');
-    }, 2000);
+    }, 1800);
   });
 }
+// Countdown to May 1, 2026, 12:00 CEST (UTC+2)
+const target = new Date('2026-05-01T12:00:00+02:00').getTime();
+function updateCountdown() {
+  const now = Date.now();
+  const diff = target - now;
+  if (diff <= 0) {
+    document.getElementById('cd-content').innerHTML =
+      '<div class="countdown-live">🎉 Server ist online — los gehts!</div>';
+    return false;
+  }
+  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((diff / (1000 * 60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+  document.getElementById('cd-d').textContent = String(d).padStart(2, '0');
+  document.getElementById('cd-h').textContent = String(h).padStart(2, '0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2, '0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2, '0');
+  return true;
+}
+updateCountdown();
+const cdInterval = setInterval(() => {
+  if (!updateCountdown()) clearInterval(cdInterval);
+}, 1000);
 </script>
 </body>
 </html>
