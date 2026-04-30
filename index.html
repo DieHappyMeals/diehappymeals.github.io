@@ -196,6 +196,25 @@
   }
   .fix-steps li { margin-bottom: 0.3rem; }
   hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+  .hint-box {
+    background: rgba(74,222,128,0.08);
+    border: 1px solid rgba(74,222,128,0.25);
+    border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    margin-top: 0.9rem;
+    color: #c9e6cf;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .hint-box strong { color: var(--green); }
+  .fix-steps code, .hint-box code {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 0.05rem 0.35rem;
+    font-size: 0.82rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
 </style>
 </head>
 <body>
@@ -245,12 +264,15 @@
       </div>
     </div>
     <ol class="fix-steps">
-      <li>Datei unten herunterladen</li>
-      <li>Archiv entpacken</li>
-      <li>Inhalt in deinen Minecraft-Spielordner einfügen und überschreiben</li>
-      <li>Minecraft neu starten</li>
+      <li>Datei unten herunterladen (<code>.tar.gz</code>)</li>
+      <li><strong>Archiv zuerst entpacken</strong> — z.B. mit 7-Zip oder WinRAR. Das Archiv selbst <strong>nicht</strong> in den Spielordner ziehen!</li>
+      <li>Den <strong>Inhalt des entpackten Ordners</strong> in deinen Minecraft-Spielordner kopieren und vorhandene Dateien überschreiben</li>
+      <li>Minecraft neu starten — fertig</li>
     </ol>
-    <a href="https://github.com/DieHappyMeals/diehappymeals.github.io/releases/download/kubejs/kubejs.1.tar.gz" download class="btn-fix">
+    <div class="hint-box">
+      ℹ️ <strong>Wichtig:</strong> Erst entpacken, dann reinziehen. Die <code>.tar.gz</code>-Datei selbst gehört <strong>nicht</strong> in den Spielordner.
+    </div>
+    <a href="./kubejs-fix.tar.gz" download class="btn-fix">
       <span>KubeJS-Fix herunterladen</span>
       <span class="arrow">↓</span>
     </a>
