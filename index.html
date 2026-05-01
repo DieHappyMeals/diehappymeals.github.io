@@ -1,304 +1,209 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Info</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-        --bg: #111;
-        --surface: #1a1a1a;
-        --surface-2: #222;
-        --border: #2a2a2a;
-        --green: #4ade80;
-        --orange: #fb923c;
-        --red: #f87171;
-        --text: #f0f0f0;
-        --muted: #888;
-        --warn-bg: #2a1f10;
-        --warn-border: #4a3520;
-        --warn-text: #f5b56a;
-    }
-    body {
-        background: var(--bg);
-        color: var(--text);
-        font-family: 'Inter', sans-serif;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        padding: 2.5rem 1rem;
-    }
-    .wrapper {
-        width: 100%;
-        max-width: 540px;
-    }
-    h1 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 0.3rem;
-    }
-    .intro {
-        color: var(--muted);
-        margin-bottom: 1.5rem;
-    }
-    .tabs {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
-    .tab-btn {
-        flex: 1;
-        padding: 0.6rem 1rem;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        color: var(--muted);
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 0.95rem;
-        font-weight: 500;
-        transition: all 0.15s;
-    }
-    .tab-btn.active {
-        background: var(--surface-2);
-        color: var(--green);
-        border-color: var(--green);
-    }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .status-badge {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        background: #0f2318;
-        border: 1px solid var(--green);
-        border-radius: 10px;
-        padding: 0.9rem 1.2rem;
-        margin-bottom: 1.5rem;
-        font-weight: 600;
-        color: var(--green);
-        font-size: 1rem;
-    }
-    .status-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--green);
-        flex-shrink: 0;
-        animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
-    }
-    .section {
-        margin-bottom: 1.2rem;
-    }
-    .label {
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-        margin-bottom: 0.5rem;
-    }
-    .box {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 0.8rem 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.5rem;
-    }
-    .box-value {
-        font-size: 1rem;
-        font-weight: 500;
-        word-break: break-all;
-        color: var(--green);
-    }
-    .box-value.code {
-        color: var(--orange);
-        font-family: monospace;
-        font-size: 1.05rem;
-    }
-    .copy-btn {
-        background: var(--surface-2);
-        border: 1px solid var(--border);
-        color: var(--text);
-        border-radius: 6px;
-        padding: 0.35rem 0.8rem;
-        font-size: 0.85rem;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.15s;
-    }
-    .copy-btn:hover { border-color: var(--green); color: var(--green); }
-    .copy-btn.copied { border-color: var(--green); color: var(--green); }
-    .curseforge-btn {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: var(--green);
-        color: #0a1a10;
-        border-radius: 10px;
-        padding: 0.9rem 1.2rem;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 0.95rem;
-        margin-top: 0.5rem;
-        transition: opacity 0.15s;
-    }
-    .curseforge-btn:hover { opacity: 0.9; }
-    .curseforge-btn .sub { font-size: 0.8rem; font-weight: 400; opacity: 0.8; }
-    .curseforge-btn .arrow { font-size: 1.2rem; }
-    .warn-box {
-        background: var(--warn-bg);
-        border: 1px solid var(--warn-border);
-        border-radius: 10px;
-        padding: 1rem 1.2rem;
-        color: var(--warn-text);
-        font-size: 0.9rem;
-        line-height: 1.6;
-        margin-bottom: 1.2rem;
-    }
-    .warn-box strong { font-weight: 600; }
-    .warn-box ol {
-        margin: 0.6rem 0 0.6rem 1.2rem;
-    }
-    .warn-box ol li { margin-bottom: 0.3rem; }
-    .dl-btn {
-        display: inline-block;
-        background: var(--surface-2);
-        border: 1px solid var(--border);
-        color: var(--text);
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        text-decoration: none;
-        font-size: 0.9rem;
-        margin-top: 0.5rem;
-        transition: border-color 0.15s;
-    }
-    .dl-btn:hover { border-color: var(--green); color: var(--green); }
-    .rule-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 1rem 1.2rem;
-        margin-bottom: 1rem;
-    }
-    .rule-num {
-        font-size: 0.72rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-        margin-bottom: 0.3rem;
-    }
-    .rule-title {
-        font-size: 1rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-    .rule-text {
-        font-size: 0.9rem;
-        color: #ccc;
-        line-height: 1.6;
-    }
-    .ok { color: var(--green); font-weight: 600; }
-    .no { color: var(--red); font-weight: 600; }
-    code { background: var(--surface-2); border-radius: 4px; padding: 0.1em 0.4em; font-size: 0.85em; }
-    </style>
-  </head>
-  <body>
-    <div class="wrapper">
-        <h1>Server Info</h1>
-      <p class="intro">Alles was du brauchst um zu joinen.</p>p>
-      <div class="tabs">
-          <button class="tab-btn active" data-tab="info" onclick="switchTab('info', this)">Info</button>button>
-          <button class="tab-btn" data-tab="regeln" onclick="switchTab('regeln', this)">Regeln</button>button>
-      </div>div>
-      <div id="tab-info" class="tab-content active">
-          <div class="status-badge">
-                <div class="status-dot"></div>div>
-                Server ist online
-          </div>div>
-          <div class="section">
-                <div class="label">1. Server IP</div>div>
-                <div class="box">
-                        <span class="box-value">213.239.195.13:25603</span>span>
-                        <button class="copy-btn" onclick="copyText('213.239.195.13:25603', this)">Kopieren</button>button>
-                </div>div>
-          </div>div>
-          <div class="section">
-                <div class="label">2. Modpack installieren</div>div>
-                <div class="box">
-                        <span class="box-value code">cNQwQw6Y</span>span>
-                        <button class="copy-btn" onclick="copyText('ckHtknE2', this)">Code kopieren</button>button>
-                </div>div>
-                <a href="https://www.curseforge.com/minecraft/share/cNQwQw6Y" class="curseforge-btn" target="_blank" rel="noopener">
-                        <div>
-                                    <div>Auf CurseForge downloaden</div>
-                                  <div class="sub">öffnet direkt die Modpack-Seite</div>
-                        </div>
-                  <span class="arrow">&#8594;</span>span>
-                </a>a>
-          </div>
-          <div class="warn-box">
-                  <strong>&#9888;&#65039; Nur lesen wenn KubeJS-Fehler kommt</strong><br><br>
-                Beim Starten alles ok? Dann brauchst du das hier <strong>nicht</strong>. Nur wenn beim Laden ein KubeJS-Error auftaucht, machst du folgendes:
-                <ol>
-                          <li>Datei unten herunterladen (<code>.tar.gz</code>)</li>
-                        <li><strong>Archiv zuerst entpacken</strong> &mdash; z.B. mit 7-Zip oder WinRAR. Das Archiv selbst <strong>nicht</strong> in den Spielordner ziehen!</li>
-                        <li>Den <strong>Inhalt des entpackten Ordners</strong>strong> in deinen Minecraft-Spielordner kopieren und vorhandene Dateien &uuml;berschreiben</li>
-                        <li>Minecraft neu starten &mdash; fertig</li>
-                </ol>
-                <strong>Wichtig:</strong> Erst entpacken, dann reinziehen. Die <code>.tar.gz</code>-Datei selbst geh&ouml;rt <strong>nicht</strong> in den Spielordner.<br>
-                <a href="./kubejs-fix.tar.gz" class="dl-btn">KubeJS-Fix herunterladen</a>a>
-          </div>
-      </div>
-      <div id="tab-regeln" class="tab-content">
-          <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1rem;">Damit der Server f&uuml;r alle fair und spa&szlig;ig bleibt, gelten folgende Regeln:</p>p>
-          <div class="rule-card">
-                <div class="rule-num">Regel 1 &middot; PvP</div>
-                <div class="rule-title">&#9876;&#65039; Schwerter mit &uuml;ber 70 Base Damage</div>
-                <div class="rule-text">
-                        Schwerter mit <strong>mehr als 70 Base Damage</strong> d&uuml;rfen verwendet werden. Gegen Mobs, Bosse und im PvE. Gegen andere Spieler im PvP sind sie <span class="no">NICHT gegen Spieler</span>span> erlaubt &mdash; damit niemand instant umgehauen wird.<br><br>
-                        <span class="ok">&#10003; Erlaubt:</span>span> Gegen Mobs, Bosse, PvE<br>
-                        <span class="no">&#10007; Verboten:</span>span> Gegen andere Spieler im PvP
-                </div>
-          </div>
-          <div class="rule-card">
-                <div class="rule-num">Regel 2 &middot; Items</div>
-                <div class="rule-title">&#128737;&#65039; Unobtainium R&uuml;stung (AllTheModium)</div>
-                <div class="rule-text">
-                        Die <strong>Unobtainium R&uuml;stung</strong> aus der Mod <strong>AllTheModium</strong> ist <span class="no">komplett verboten</span>span>.<br><br>
-                        <span class="no">&#10007; Verboten:</span>span> Nur die <strong>R&uuml;stung</strong> (Helm, Brustplatte, Hose, Schuhe).<br>
-                        <span class="ok">&#10003; Erlaubt:</span>span> Der Rest der Mod (Werkzeuge, Schwerter, Items, Erze etc.) bleibt erlaubt.
-                </div>
-          </div>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Server Info</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #111;
+  --surface: #1a1a1a;
+  --surface-2: #222;
+  --border: #2a2a2a;
+  --green: #4ade80;
+  --orange: #fb923c;
+  --red: #f87171;
+  --text: #f0f0f0;
+  --muted: #888;
+  --warn-bg: #2a1f10;
+  --warn-border: #4a3520;
+  --warn-text: #f5b56a;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+}
+.wrapper { width: 100%; max-width: 540px; }
+h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.3rem; }
+.intro { color: var(--muted); margin-bottom: 1.5rem; }
+.tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+.tab-btn {
+  flex: 1; padding: 0.6rem 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted);
+  border-radius: 8px; cursor: pointer;
+  font-size: 0.95rem; font-weight: 500; transition: all 0.15s;
+}
+.tab-btn.active { background: var(--surface-2); color: var(--green); border-color: var(--green); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.status-badge {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: #0f2318; border: 1px solid var(--green);
+  border-radius: 10px; padding: 0.9rem 1.2rem;
+  margin-bottom: 1.5rem; font-weight: 600;
+  color: var(--green); font-size: 1rem;
+}
+.status-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.section { margin-bottom: 1.2rem; }
+.label {
+  font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); margin-bottom: 0.5rem;
+}
+.box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.8rem 1rem;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 0.5rem;
+}
+.box-value { font-size: 1rem; font-weight: 500; word-break: break-all; color: var(--green); }
+.box-value.code { color: var(--orange); font-family: monospace; font-size: 1.05rem; }
+.copy-btn {
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text); border-radius: 6px;
+  padding: 0.35rem 0.8rem; font-size: 0.85rem;
+  cursor: pointer; white-space: nowrap; transition: all 0.15s;
+}
+.copy-btn:hover, .copy-btn.copied { border-color: var(--green); color: var(--green); }
+.curseforge-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--green); color: #0a1a10;
+  border-radius: 10px; padding: 0.9rem 1.2rem;
+  text-decoration: none; font-weight: 700; font-size: 0.95rem;
+  margin-top: 0.5rem; transition: opacity 0.15s;
+}
+.curseforge-btn:hover { opacity: 0.9; }
+.curseforge-btn .sub { font-size: 0.8rem; font-weight: 400; opacity: 0.8; }
+.warn-box {
+  background: var(--warn-bg); border: 1px solid var(--warn-border);
+  border-radius: 10px; padding: 1rem 1.2rem;
+  color: var(--warn-text); font-size: 0.9rem;
+  line-height: 1.6; margin-bottom: 1.2rem;
+}
+.warn-box ol { margin: 0.6rem 0 0.6rem 1.2rem; }
+.warn-box ol li { margin-bottom: 0.3rem; }
+.dl-btn {
+  display: inline-block; background: var(--surface-2);
+  border: 1px solid var(--border); color: var(--text);
+  border-radius: 8px; padding: 0.5rem 1rem;
+  text-decoration: none; font-size: 0.9rem; margin-top: 0.5rem;
+}
+.dl-btn:hover { border-color: var(--green); color: var(--green); }
+.rule-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1rem;
+}
+.rule-num {
+  font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); margin-bottom: 0.3rem;
+}
+.rule-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.rule-text { font-size: 0.9rem; color: #ccc; line-height: 1.6; }
+.ok { color: var(--green); font-weight: 600; }
+.no { color: var(--red); font-weight: 600; }
+code { background: var(--surface-2); border-radius: 4px; padding: 0.1em 0.4em; font-size: 0.85em; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <h1>Server Info</h1>
+  <p class="intro">Alles was du brauchst um zu joinen.</p>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="info" onclick="switchTab('info', this)">Info</button>
+    <button class="tab-btn" data-tab="regeln" onclick="switchTab('regeln', this)">Regeln</button>
+  </div>
+  <div id="tab-info" class="tab-content active">
+    <div class="status-badge">
+      <div class="status-dot"></div>
+      Server ist online
+    </div>
+    <div class="section">
+      <div class="label">1. Server IP</div>
+      <div class="box">
+        <span class="box-value">213.239.195.13:25603</span>
+        <button class="copy-btn" onclick="copyText('213.239.195.13:25603', this)">Kopieren</button>
       </div>
     </div>
-  <script>
-    function switchTab(name, btn) {
-        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-        document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
-        btn.classList.add('active');
-        document.getElementById('tab-' + name).classList.add('active');
-    }
-    function copyText(text, btn) {
-        navigator.clipboard.writeText(text).then(function() {
-              var original = btn.textContent;
-              btn.textContent = 'Kopiert \u2713';
-              btn.classList.add('copied');
-              setTimeout(function(){
-                      btn.textContent = original;
-                      btn.classList.remove('copied');
-              }, 1800);
-        });
-    }
-  </script>
-  </body>
+    <div class="section">
+      <div class="label">2. Modpack installieren</div>
+      <div class="box">
+        <span class="box-value code">cNQwQw6Y</span>
+        <button class="copy-btn" onclick="copyText('ckHtknE2', this)">Code kopieren</button>
+      </div>
+      <a href="https://www.curseforge.com/minecraft/share/cNQwQw6Y" class="curseforge-btn" target="_blank" rel="noopener">
+        <div>
+          <div>Auf CurseForge downloaden</div>
+          <div class="sub">öffnet direkt die Modpack-Seite</div>
+        </div>
+        <span>→</span>
+      </a>
+    </div>
+    <div class="warn-box">
+      <strong>⚠️ Nur lesen wenn KubeJS-Fehler kommt</strong><br><br>
+      Beim Starten alles ok? Dann brauchst du das hier <strong>nicht</strong>. Nur wenn beim Laden ein KubeJS-Error auftaucht:
+      <ol>
+        <li>Datei unten herunterladen (<code>.tar.gz</code>)</li>
+        <li><strong>Archiv zuerst entpacken</strong> — z.B. mit 7-Zip oder WinRAR. Das Archiv selbst <strong>nicht</strong> in den Spielordner ziehen!</li>
+        <li>Den <strong>Inhalt des entpackten Ordners</strong> in deinen Minecraft-Spielordner kopieren</li>
+        <li>Minecraft neu starten — fertig</li>
+      </ol>
+      <a href="./kubejs-fix.tar.gz" class="dl-btn">KubeJS-Fix herunterladen</a>
+    </div>
+  </div>
+  <div id="tab-regeln" class="tab-content">
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1rem;">Damit der Server für alle fair und spaßig bleibt:</p>
+    <div class="rule-card">
+      <div class="rule-num">Regel 1 · PvP</div>
+      <div class="rule-title">⚔️ Schwerter mit über 70 Base Damage</div>
+      <div class="rule-text">
+        Schwerter mit <strong>mehr als 70 Base Damage</strong> dürfen gegen Mobs und im PvE eingesetzt werden. Im PvP gegen andere Spieler sind sie <span class="no">verboten</span>.<br><br>
+        <span class="ok">✓ Erlaubt:</span> Mobs, Bosse, PvE<br>
+        <span class="no">✗ Verboten:</span> Gegen andere Spieler
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">Regel 2 · Items</div>
+      <div class="rule-title">🛡️ Unobtainium Rüstung (AllTheModium)</div>
+      <div class="rule-text">
+        Die <strong>Unobtainium Rüstung</strong> aus <strong>AllTheModium</strong> ist <span class="no">komplett verboten</span>.<br><br>
+        <span class="no">✗ Verboten:</span> Helm, Brustplatte, Hose, Schuhe.<br>
+        <span class="ok">✓ Erlaubt:</span> Werkzeuge, Schwerter, Items, Erze etc.
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(function() {
+    var orig = btn.textContent;
+    btn.textContent = 'Kopiert ✓';
+    btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+  });
+}
+</script>
+</body>
 </html>
