@@ -20,6 +20,9 @@
   --warn-bg: #2a1f10;
   --warn-border: #4a3520;
   --warn-text: #f5b56a;
+  --info-bg: #102338;
+  --info-border: #1e4a7a;
+  --info-text: #6ab5f5;
 }
 body {
   background: var(--bg);
@@ -46,19 +49,25 @@ h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.3rem; }
 .tab-content.active { display: block; }
 .status-badge {
   display: flex; align-items: center; gap: 0.6rem;
-  background: #0f2318; border: 1px solid var(--green);
+  background: #2a1f10; border: 1px solid var(--orange);
   border-radius: 10px; padding: 0.9rem 1.2rem;
-  margin-bottom: 1.5rem; font-weight: 600;
-  color: var(--green); font-size: 1rem;
+  margin-bottom: 1rem; font-weight: 600;
+  color: var(--orange); font-size: 1rem;
 }
 .status-dot {
   width: 10px; height: 10px; border-radius: 50%;
-  background: var(--green); flex-shrink: 0;
+  background: var(--orange); flex-shrink: 0;
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
+}
+.update-info {
+  background: var(--info-bg); border: 1px solid var(--info-border);
+  border-radius: 10px; padding: 0.9rem 1.2rem;
+  color: var(--info-text); font-size: 0.9rem;
+  line-height: 1.6; margin-bottom: 1.5rem;
 }
 .section { margin-bottom: 1.2rem; }
 .label {
@@ -132,7 +141,11 @@ code { background: var(--surface-2); border-radius: 4px; padding: 0.1em 0.4em; f
   <div id="tab-info" class="tab-content active">
     <div class="status-badge">
       <div class="status-dot"></div>
-      Server ist online
+      Neues Update
+    </div>
+    <div class="update-info">
+      <strong>ℹ️ Info zum neuen Update</strong><br><br>
+      Es kann sein, dass ihr nach der Installation des neuen Packs wieder den <strong>KubeJS-Fix</strong> machen müsst. Falls ihr die Datei nicht mehr habt, fragt einfach nochmal danach.
     </div>
     <div class="section">
       <div class="label">1. Server IP</div>
@@ -144,8 +157,8 @@ code { background: var(--surface-2); border-radius: 4px; padding: 0.1em 0.4em; f
     <div class="section">
       <div class="label">2. Modpack installieren</div>
       <div class="box">
-        <span class="box-value code">cNQwQw6Y</span>
-        <button class="copy-btn" onclick="copyText('cNQwQw6Y', this)">Code kopieren</button>
+        <span class="box-value code">ufow_CEu</span>
+        <button class="copy-btn" onclick="copyText('ufow_CEu', this)">Code kopieren</button>
       </div>
     </div>
     <div class="warn-box">
