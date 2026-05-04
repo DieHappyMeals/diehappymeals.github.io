@@ -4,212 +4,937 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Server Info</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #111;
-  --surface: #1a1a1a;
-  --surface-2: #222;
-  --border: #2a2a2a;
-  --green: #4ade80;
-  --orange: #fb923c;
-  --red: #f87171;
-  --text: #f0f0f0;
-  --muted: #888;
-  --warn-bg: #2a1f10;
-  --warn-border: #4a3520;
-  --warn-text: #f5b56a;
-  --info-bg: #102338;
-  --info-border: #1e4a7a;
-  --info-text: #6ab5f5;
-}
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  padding: 2.5rem 1rem;
-}
-.wrapper { width: 100%; max-width: 540px; }
-h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.3rem; }
-.intro { color: var(--muted); margin-bottom: 1.5rem; }
-.tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-.tab-btn {
-  flex: 1; padding: 0.6rem 1rem;
-  border: 1px solid var(--border);
-  background: var(--surface); color: var(--muted);
-  border-radius: 8px; cursor: pointer;
-  font-size: 0.95rem; font-weight: 500; transition: all 0.15s;
-}
-.tab-btn.active { background: var(--surface-2); color: var(--green); border-color: var(--green); }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-.status-badge {
-  display: flex; align-items: center; gap: 0.6rem;
-  background: #2a1f10; border: 1px solid var(--orange);
-  border-radius: 10px; padding: 0.9rem 1.2rem;
-  margin-bottom: 1rem; font-weight: 600;
-  color: var(--orange); font-size: 1rem;
-}
-.status-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--orange); flex-shrink: 0;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-.update-info {
-  background: var(--info-bg); border: 1px solid var(--info-border);
-  border-radius: 10px; padding: 0.9rem 1.2rem;
-  color: var(--info-text); font-size: 0.9rem;
-  line-height: 1.6; margin-bottom: 1.5rem;
-}
-.section { margin-bottom: 1.2rem; }
-.label {
-  font-size: 0.75rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--muted); margin-bottom: 0.5rem;
-}
-.box {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 0.8rem 1rem;
-  display: flex; align-items: center;
-  justify-content: space-between; gap: 0.5rem;
-}
-.box-value { font-size: 1rem; font-weight: 500; word-break: break-all; color: var(--green); }
-.box-value.code { color: var(--orange); font-family: monospace; font-size: 1.05rem; }
-.copy-btn {
-  background: var(--surface-2); border: 1px solid var(--border);
-  color: var(--text); border-radius: 6px;
-  padding: 0.35rem 0.8rem; font-size: 0.85rem;
-  cursor: pointer; white-space: nowrap; transition: all 0.15s;
-}
-.copy-btn:hover, .copy-btn.copied { border-color: var(--green); color: var(--green); }
-.curseforge-btn {
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--green); color: #0a1a10;
-  border-radius: 10px; padding: 0.9rem 1.2rem;
-  text-decoration: none; font-weight: 700; font-size: 0.95rem;
-  margin-top: 0.5rem; transition: opacity 0.15s;
-}
-.curseforge-btn:hover { opacity: 0.9; }
-.curseforge-btn .sub { font-size: 0.8rem; font-weight: 400; opacity: 0.8; }
-.warn-box {
-  background: var(--warn-bg); border: 1px solid var(--warn-border);
-  border-radius: 10px; padding: 1rem 1.2rem;
-  color: var(--warn-text); font-size: 0.9rem;
-  line-height: 1.6; margin-bottom: 1.2rem;
-}
-.warn-box ol { margin: 0.6rem 0 0.6rem 1.2rem; }
-.warn-box ol li { margin-bottom: 0.3rem; }
-.dl-btn {
-  display: inline-block; background: var(--surface-2);
-  border: 1px solid var(--border); color: var(--text);
-  border-radius: 8px; padding: 0.5rem 1rem;
-  text-decoration: none; font-size: 0.9rem; margin-top: 0.5rem;
-}
-.dl-btn:hover { border-color: var(--green); color: var(--green); }
-.rule-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1rem;
-}
-.rule-num {
-  font-size: 0.72rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--muted); margin-bottom: 0.3rem;
-}
-.rule-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
-.rule-text { font-size: 0.9rem; color: #ccc; line-height: 1.6; }
-.ok { color: var(--green); font-weight: 600; }
-.no { color: var(--red); font-weight: 600; }
-code { background: var(--surface-2); border-radius: 4px; padding: 0.1em 0.4em; font-size: 0.85em; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e1117;
+    --bg-2: #151a23;
+    --surface: #1a212c;
+    --surface-2: #232b39;
+    --border: #2d3441;
+    --border-light: #3d4553;
+    --text: #eef0f5;
+    --text-2: #c4cad6;
+    --muted: #8a93a4;
+    --muted-2: #5a6271;
+
+    --green: #4ade80;
+    --green-bg: rgba(74,222,128,0.08);
+    --green-border: rgba(74,222,128,0.25);
+
+    --blue: #60a5fa;
+    --blue-bg: rgba(96,165,250,0.08);
+    --blue-border: rgba(96,165,250,0.25);
+
+    --purple: #a78bfa;
+    --purple-bg: rgba(167,139,250,0.08);
+    --purple-border: rgba(167,139,250,0.25);
+
+    --pink: #f472b6;
+    --pink-bg: rgba(244,114,182,0.08);
+
+    --orange: #fb923c;
+    --orange-bg: rgba(251,146,60,0.08);
+    --orange-border: rgba(251,146,60,0.3);
+
+    --red: #f87171;
+    --red-bg: rgba(248,113,113,0.08);
+    --red-border: rgba(248,113,113,0.25);
+  }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 600px 300px at 20% 0%, rgba(167,139,250,0.08), transparent),
+      radial-gradient(ellipse 500px 300px at 90% 10%, rgba(96,165,250,0.06), transparent);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem 3rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrapper { width: 100%; max-width: 520px; }
+
+  /* ─── Header ─── */
+  .header {
+    margin-bottom: 1.75rem;
+  }
+
+  .greeting {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 .accent {
+    background: linear-gradient(135deg, var(--blue), var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-2);
+  }
+
+  .pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+
+  /* ─── Live status (the big colorful card) ─── */
+  .status-card {
+    background: linear-gradient(135deg, var(--green-bg), transparent);
+    border: 1px solid var(--green-border);
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .status-card.offline {
+    background: linear-gradient(135deg, var(--red-bg), transparent);
+    border-color: var(--red-border);
+  }
+
+  .status-card.loading {
+    background: linear-gradient(135deg, var(--orange-bg), transparent);
+    border-color: var(--orange-border);
+  }
+
+  .status-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .status-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--green-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid var(--green-border);
+    position: relative;
+  }
+
+  .status-card.offline .status-icon { background: var(--red-bg); border-color: var(--red-border); }
+  .status-card.loading .status-icon { background: var(--orange-bg); border-color: var(--orange-border); }
+
+  .status-pulse {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 var(--green);
+    animation: ring 2s infinite;
+  }
+
+  .status-card.offline .status-pulse { background: var(--red); animation: none; }
+  .status-card.loading .status-pulse { background: var(--orange); animation: blink 1.2s infinite; }
+
+  @keyframes ring {
+    0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
+    100% { box-shadow: 0 0 0 12px rgba(74,222,128,0); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .status-info-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 1px;
+  }
+
+  .status-info-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .status-card.offline .status-info-text { color: var(--red); }
+  .status-card.loading .status-info-text { color: var(--orange); }
+
+  .player-display {
+    text-align: right;
+  }
+
+  .player-num {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .player-num .max {
+    color: var(--muted);
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .player-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* ─── Tabs ─── */
+  .tabs {
+    display: flex;
+    gap: 0.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.3rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 0.55rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .tab:hover { color: var(--text-2); }
+
+  .tab.active {
+    background: var(--surface-2);
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--border-light);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fade 0.3s; }
+
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── Info cards (colorful) ─── */
+  .info-card {
+    border-radius: 14px;
+    padding: 1rem 1.15rem;
+    margin-bottom: 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .info-card.blue {
+    background: linear-gradient(135deg, var(--blue-bg), transparent);
+    border-color: var(--blue-border);
+  }
+
+  .info-card.purple {
+    background: linear-gradient(135deg, var(--purple-bg), transparent);
+    border-color: var(--purple-border);
+  }
+
+  .info-card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .info-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+  }
+
+  .info-icon.blue { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+  .info-icon.purple { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+
+  .info-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .info-value {
+    font-size: 1.05rem;
+    font-weight: 600;
+    word-break: break-all;
+    letter-spacing: -0.005em;
+  }
+
+  .info-value.blue { color: var(--blue); }
+  .info-value.purple { color: var(--purple); }
+
+  .copy-btn {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    border-radius: 8px;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .copy-btn:hover {
+    background: var(--surface);
+    border-color: var(--border-light);
+    color: var(--text);
+    transform: translateY(-1px);
+  }
+
+  .copy-btn.copied {
+    background: var(--green-bg);
+    border-color: var(--green-border);
+    color: var(--green);
+  }
+
+  /* ─── Warning ─── */
+  .warn-card {
+    background: linear-gradient(135deg, var(--orange-bg), transparent);
+    border: 1px solid var(--orange-border);
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .warn-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .warn-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--orange-bg);
+    border: 1px solid var(--orange-border);
+    color: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+
+  .warn-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--orange);
+  }
+
+  .warn-text {
+    font-size: 0.88rem;
+    color: var(--text-2);
+    line-height: 1.6;
+    margin-bottom: 0.85rem;
+  }
+
+  .warn-text strong { color: var(--text); }
+
+  .steps {
+    list-style: none;
+    counter-reset: steps;
+    margin-bottom: 1rem;
+  }
+
+  .steps li {
+    counter-increment: steps;
+    padding: 0.55rem 0 0.55rem 2.2rem;
+    font-size: 0.87rem;
+    color: var(--text-2);
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid rgba(251,146,60,0.1);
+  }
+
+  .steps li:last-child { border-bottom: none; }
+
+  .steps li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    width: 22px;
+    height: 22px;
+    background: var(--orange);
+    color: #1a1208;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    background: var(--orange);
+    color: #1a1208;
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .download-btn:hover {
+    background: #ffa14d;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(251,146,60,0.3);
+  }
+
+  code {
+    background: rgba(251,146,60,0.15);
+    color: var(--orange);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-weight: 500;
+  }
+
+  /* ─── Rules ─── */
+  .rules-intro {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+  }
+
+  .rule-card {
+    border-radius: 14px;
+    padding: 1.15rem 1.25rem;
+    margin-bottom: 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .rule-card.green {
+    background: linear-gradient(135deg, var(--green-bg), transparent);
+    border-color: var(--green-border);
+  }
+
+  .rule-card.pink {
+    background: linear-gradient(135deg, var(--pink-bg), transparent);
+    border-color: rgba(244,114,182,0.25);
+  }
+
+  .rule-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.7rem;
+  }
+
+  .rule-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border-light);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .rule-tag .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .rule-card.green .dot { background: var(--green); }
+  .rule-card.pink .dot { background: var(--pink); }
+
+  .rule-emoji { font-size: 1.4rem; }
+
+  .rule-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.005em;
+  }
+
+  .rule-desc {
+    font-size: 0.88rem;
+    color: var(--text-2);
+    line-height: 1.6;
+    margin-bottom: 0.85rem;
+  }
+
+  .rule-desc strong { color: var(--text); font-weight: 600; }
+
+  .verdicts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .verdict.ok {
+    background: var(--green-bg);
+    color: var(--green);
+    border: 1px solid var(--green-border);
+  }
+
+  .verdict.no {
+    background: var(--red-bg);
+    color: var(--red);
+    border: 1px solid var(--red-border);
+  }
+
+  /* ─── Footer ─── */
+  .footer {
+    margin-top: 2.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted-2);
+  }
+
+  /* ─── Player heads ─── */
+  .players-strip {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: -1.25rem;
+    margin-bottom: 1.5rem;
+    padding: 0.65rem 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    animation: fade 0.3s ease;
+  }
+
+  .players-strip.visible { display: flex; }
+
+  .heads {
+    display: flex;
+    align-items: center;
+  }
+
+  .head {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-2);
+    background: var(--surface-2);
+    image-rendering: pixelated;
+    object-fit: cover;
+    transition: transform 0.15s;
+  }
+
+  .head:hover {
+    transform: translateY(-2px) scale(1.1);
+    z-index: 5;
+  }
+
+  .head + .head { margin-left: -8px; }
+
+  .head-more {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-2);
+    background: var(--surface-2);
+    color: var(--text-2);
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -8px;
+  }
+
+  .player-names {
+    font-size: 0.78rem;
+    color: var(--muted);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .player-names strong { color: var(--text-2); font-weight: 500; }
+
+  /* ─── Update meter ─── */
+  .update-meter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.65rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.7rem;
+    color: var(--muted-2);
+    font-weight: 500;
+  }
+
+  .meter-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--muted-2);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+
+  .meter-dot.fresh {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+
+  /* ─── Mobile ─── */
+  @media (max-width: 480px) {
+    h1 { font-size: 1.55rem; }
+    .player-num { font-size: 1.5rem; }
+    .status-card { padding: 1rem; }
+    .players-strip { margin-left: 0.5rem; margin-right: 0.5rem; }
+  }
 </style>
 </head>
 <body>
 <div class="wrapper">
-  <h1>Server Info</h1>
-  <p class="intro">Alles was du brauchst um zu joinen.</p>
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="info" onclick="switchTab('info', this)">Info</button>
-    <button class="tab-btn" data-tab="regeln" onclick="switchTab('regeln', this)">Regeln</button>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="subtitle">
+      <span class="pill"><span class="pill-dot"></span>Linggango</span>
+      <span class="pill"><span class="pill-dot"></span>Modded Survival</span>
+      <span class="pill"><span class="pill-dot"></span>v6.4</span>
+    </div>
   </div>
-  <div id="tab-info" class="tab-content active">
-    <div class="status-badge">
-      <div class="status-dot"></div>
-      Neues Update
+
+  <!-- Live Status -->
+  <div class="status-card loading" id="status-card">
+    <div class="status-left">
+      <div class="status-icon">
+        <div class="status-pulse"></div>
+      </div>
+      <div>
+        <div class="status-info-label">Server Status</div>
+        <div class="status-info-text" id="status-text">Wird geprüft...</div>
+      </div>
     </div>
-    <div class="update-info">
-      <strong>ℹ️ Info zum neuen Update</strong><br><br>
-      Es kann sein, dass ihr nach der Installation des neuen Packs wieder den <strong>KubeJS-Fix</strong> machen müsst. Falls ihr die Datei nicht mehr habt, fragt einfach nochmal danach.
+    <div class="player-display">
+      <div class="player-num"><span id="players-online">–</span><span class="max">/<span id="players-max">–</span></span></div>
+      <div class="player-label">online</div>
     </div>
-    <div class="section">
-      <div class="label">1. Server IP</div>
-      <div class="box">
-        <span class="box-value">213.239.195.13:25603</span>
+  </div>
+
+  <!-- Player heads strip (hidden when no players) -->
+  <div class="players-strip" id="players-strip">
+    <div class="heads" id="heads"></div>
+    <div class="player-names" id="player-names"></div>
+  </div>
+
+  <!-- Update meter -->
+  <div class="update-meter">
+    <span class="meter-dot" id="meter-dot"></span>
+    <span id="update-text">aktualisiert vor — s</span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('connect', this)">Join</button>
+    <button class="tab" onclick="switchTab('rules', this)">Regeln</button>
+  </div>
+
+  <!-- ── CONNECT TAB ── -->
+  <div id="tab-connect" class="tab-content active">
+
+    <!-- Server IP -->
+    <div class="info-card blue">
+      <div class="info-card-head">
+        <div class="info-icon blue">🌐</div>
+        <div class="info-label">Server IP</div>
+      </div>
+      <div class="info-row">
+        <span class="info-value blue">213.239.195.13:25603</span>
         <button class="copy-btn" onclick="copyText('213.239.195.13:25603', this)">Kopieren</button>
       </div>
     </div>
-    <div class="section">
-      <div class="label">2. Modpack installieren</div>
-      <div class="box">
-        <span class="box-value code">ufow_CEu</span>
-        <button class="copy-btn" onclick="copyText('ufow_CEu', this)">Code kopieren</button>
+
+    <!-- Modpack -->
+    <div class="info-card purple">
+      <div class="info-card-head">
+        <div class="info-icon purple">📦</div>
+        <div class="info-label">Modpack Code · CurseForge</div>
+      </div>
+      <div class="info-row">
+        <span class="info-value purple">ufow_CEu</span>
+        <button class="copy-btn" onclick="copyText('ufow_CEu', this)">Kopieren</button>
       </div>
     </div>
-    <div class="warn-box">
-      <strong>⚠️ Nur lesen wenn KubeJS-Fehler kommt</strong><br><br>
-      Beim Starten alles ok? Dann brauchst du das hier <strong>nicht</strong>. Nur wenn beim Laden ein KubeJS-Error auftaucht:
-      <ol>
+
+    <!-- KubeJS Warning -->
+    <div class="warn-card">
+      <div class="warn-head">
+        <div class="warn-icon">⚠</div>
+        <div class="warn-title">KubeJS-Fehler? Nur dann lesen!</div>
+      </div>
+      <div class="warn-text">
+        Beim Starten alles ok? Dann brauchst du das hier <strong>nicht</strong>. Nur falls beim Laden ein KubeJS-Error auftaucht:
+      </div>
+      <ol class="steps">
         <li>Datei unten herunterladen (<code>.tar.gz</code>)</li>
-        <li><strong>Archiv zuerst entpacken</strong> — z.B. mit 7-Zip oder WinRAR. Das Archiv selbst <strong>nicht</strong> in den Spielordner ziehen!</li>
-        <li>Den <strong>Inhalt des entpackten Ordners</strong> in deinen Minecraft-Spielordner kopieren</li>
-        <li>Minecraft neu starten — fertig</li>
+        <li><strong>Archiv erst entpacken</strong> – mit 7-Zip oder WinRAR. Nicht das Archiv direkt reinziehen!</li>
+        <li>Den <strong>Inhalt des entpackten Ordners</strong> in deinen Minecraft-Spielordner kopieren und überschreiben.</li>
+        <li>Minecraft neu starten – fertig!</li>
       </ol>
-      <a href="./kubejs-fix.tar.gz" class="dl-btn">KubeJS-Fix herunterladen</a>
+      <a href="./kubejs-fix.tar.gz" download class="download-btn">↓ KubeJS-Fix herunterladen</a>
     </div>
+
   </div>
-  <div id="tab-regeln" class="tab-content">
-    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1rem;">Damit der Server für alle fair und spaßig bleibt:</p>
-    <div class="rule-card">
-      <div class="rule-num">Regel 1 · PvP</div>
-      <div class="rule-title">⚔️ Schwerter mit über 70 Base Damage</div>
-      <div class="rule-text">
-        Schwerter mit <strong>mehr als 70 Base Damage</strong> dürfen gegen Mobs und im PvE eingesetzt werden. Im PvP gegen andere Spieler sind sie <span class="no">verboten</span>.<br><br>
-        <span class="ok">✓ Erlaubt:</span> Mobs, Bosse, PvE<br>
-        <span class="no">✗ Verboten:</span> Gegen andere Spieler
+
+  <!-- ── RULES TAB ── -->
+  <div id="tab-rules" class="tab-content">
+
+    <p class="rules-intro">Damit der Server für alle fair und spaßig bleibt – nur zwei kleine Regeln. 🤝</p>
+
+    <!-- Rule 1 -->
+    <div class="rule-card green">
+      <div class="rule-head">
+        <span class="rule-tag"><span class="dot"></span>Regel 1 · PvP</span>
+        <span class="rule-emoji">⚔️</span>
+      </div>
+      <div class="rule-title">Schwerter über 70 Base Damage</div>
+      <div class="rule-desc">
+        Solche Schwerter sind im PvE und gegen Mobs erlaubt – aber nicht im PvP gegen andere Spieler.
+      </div>
+      <div class="verdicts">
+        <span class="verdict ok">✓ Mobs &amp; Bosse</span>
+        <span class="verdict no">✗ PvP</span>
       </div>
     </div>
-    <div class="rule-card">
-      <div class="rule-num">Regel 2 · Items</div>
-      <div class="rule-title">🛡️ Unobtainium Rüstung (AllTheModium)</div>
-      <div class="rule-text">
-        Die <strong>Unobtainium Rüstung</strong> aus <strong>AllTheModium</strong> ist <span class="no">komplett verboten</span>.<br><br>
-        <span class="no">✗ Verboten:</span> Helm, Brustplatte, Hose, Schuhe.<br>
-        <span class="ok">✓ Erlaubt:</span> Werkzeuge, Schwerter, Items, Erze etc.
+
+    <!-- Rule 2 -->
+    <div class="rule-card green">
+      <div class="rule-head">
+        <span class="rule-tag"><span class="dot"></span>Regel 2 · Items</span>
+        <span class="rule-emoji">🛡️</span>
+      </div>
+      <div class="rule-title">Unobtainium Rüstung (AllTheModium)</div>
+      <div class="rule-desc">
+        Helm, Brustplatte, Hose und Schuhe aus <strong>Unobtainium</strong> sind komplett verboten. Werkzeuge, Schwerter und Erze sind okay.
+      </div>
+      <div class="verdicts">
+        <span class="verdict no">✗ Rüstungsteile</span>
+        <span class="verdict ok">✓ Tools &amp; Erze</span>
       </div>
     </div>
+
   </div>
+
+  <div class="footer">have fun &amp; viel Spaß ✌️</div>
+
 </div>
+
 <script>
 function switchTab(name, btn) {
-  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-  document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
 }
+
 function copyText(text, btn) {
-  navigator.clipboard.writeText(text).then(function() {
-    var orig = btn.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
     btn.textContent = 'Kopiert ✓';
     btn.classList.add('copied');
-    setTimeout(function(){ btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
   });
 }
+
+// Live server status
+let lastUpdate = null;
+
+async function fetchStatus() {
+  const card = document.getElementById('status-card');
+  const text = document.getElementById('status-text');
+  const onlineEl = document.getElementById('players-online');
+  const maxEl = document.getElementById('players-max');
+  const strip = document.getElementById('players-strip');
+  const heads = document.getElementById('heads');
+  const namesEl = document.getElementById('player-names');
+  const meterDot = document.getElementById('meter-dot');
+
+  try {
+    const res = await fetch('https://api.mcsrvstat.us/3/213.239.195.13:25603');
+    const data = await res.json();
+
+    card.classList.remove('loading', 'offline');
+
+    if (data.online) {
+      text.textContent = 'Online';
+      const on = data.players?.online ?? 0;
+      const max = data.players?.max ?? '?';
+      onlineEl.textContent = on;
+      maxEl.textContent = max;
+
+      // Render player heads
+      const list = data.players?.list ?? [];
+      if (on > 0 && list.length > 0) {
+        strip.classList.add('visible');
+        heads.innerHTML = '';
+        const visible = list.slice(0, 5);
+        visible.forEach(p => {
+          const name = p.name || p;
+          const img = document.createElement('img');
+          img.className = 'head';
+          img.src = `https://mc-heads.net/avatar/${encodeURIComponent(name)}/64`;
+          img.alt = name;
+          img.title = name;
+          img.onerror = () => { img.style.display = 'none'; };
+          heads.appendChild(img);
+        });
+        if (list.length > 5) {
+          const more = document.createElement('div');
+          more.className = 'head-more';
+          more.textContent = '+' + (list.length - 5);
+          heads.appendChild(more);
+        }
+        const names = list.slice(0, 3).map(p => p.name || p).join(', ');
+        const extra = list.length > 3 ? ` und ${list.length - 3} weitere` : '';
+        namesEl.innerHTML = `<strong>${names}</strong>${extra}`;
+      } else {
+        strip.classList.remove('visible');
+      }
+    } else {
+      card.classList.add('offline');
+      text.textContent = 'Offline';
+      onlineEl.textContent = '0';
+      maxEl.textContent = '0';
+      strip.classList.remove('visible');
+    }
+
+    lastUpdate = Date.now();
+    meterDot.classList.add('fresh');
+    setTimeout(() => meterDot.classList.remove('fresh'), 1500);
+    updateMeter();
+  } catch (e) {
+    card.classList.remove('loading');
+    card.classList.add('offline');
+    text.textContent = 'Nicht erreichbar';
+    onlineEl.textContent = '–';
+    maxEl.textContent = '–';
+    strip.classList.remove('visible');
+  }
+}
+
+function updateMeter() {
+  const txt = document.getElementById('update-text');
+  if (!lastUpdate) { txt.textContent = 'aktualisiert vor — s'; return; }
+  const sec = Math.floor((Date.now() - lastUpdate) / 1000);
+  if (sec < 5) txt.textContent = 'gerade aktualisiert';
+  else if (sec < 60) txt.textContent = `aktualisiert vor ${sec}s`;
+  else txt.textContent = `aktualisiert vor ${Math.floor(sec/60)}m`;
+}
+
+fetchStatus();
+setInterval(fetchStatus, 30000);
+setInterval(updateMeter, 1000);
 </script>
 </body>
 </html>
