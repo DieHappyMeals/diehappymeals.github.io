@@ -91,10 +91,10 @@ body{
 .hero.ld .sb-pulse{background:var(--gold);animation:blink 1s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(126,235,176,.5)}100%{box-shadow:0 0 0 10px rgba(126,235,176,0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
-.hm-row{display:flex;align-items:center;gap:.55rem;font-size:.78rem;color:var(--text2);padding:.18rem 0}
-.hm-icon{color:var(--lav);font-size:.85rem;width:14px;text-align:center;flex-shrink:0}
-.hm-label{color:var(--mut);font-weight:500;flex-shrink:0;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;width:60px}
-.hm-value{color:var(--text);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hm-row{display:grid;grid-template-columns:16px 92px 1fr;gap:.7rem;align-items:center;font-size:.78rem;color:var(--text2);padding:.22rem 0}
+.hm-icon{color:var(--lav);font-size:.9rem;text-align:center}
+.hm-label{color:var(--mut);font-weight:500;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.hm-value{color:var(--text);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .hm-value.mood-cozy{color:var(--mint)}
 .hm-value.mood-lively{color:var(--pink)}
 .hm-value.mood-buzzing{color:var(--gold)}
@@ -113,7 +113,10 @@ body{
 .cm-card:hover{transform:translateY(-2px);border-color:var(--pinkBd)}
 @keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
 .cm-head{width:28px;height:28px;border-radius:6px;background:var(--surface3);image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor;flex-shrink:0;border:1px solid var(--border2)}
-.cm-name{font-size:.78rem;color:var(--text);font-weight:600;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-name{font-size:.78rem;color:var(--text);font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-card.cm-anon{background:var(--surface);border-style:dashed}
+.cm-card.cm-anon .cm-name{color:var(--text2)}
+.cm-anon-icon{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;background:var(--surface3);color:var(--lav);font-family:var(--pix);font-size:.95rem;border:1px dashed var(--border2);flex-shrink:0}
 .crew-empty{display:flex;align-items:center;gap:.85rem;width:100%;padding:.35rem .25rem}
 .ce-mascot{font-size:1.7rem;animation:wiggle 3s ease-in-out infinite}
 @keyframes wiggle{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
@@ -143,8 +146,8 @@ body{
 .cc-btn-done{display:none}
 .cc-btn.cp .cc-btn-default{display:none}
 .cc-btn.cp .cc-btn-done{display:block}
-.kbd-hint{display:flex;align-items:center;justify-content:center;gap:.35rem;margin-top:.35rem;font-size:.7rem;color:var(--mut2)}
-.kbd{background:var(--surface2);border:1px solid var(--border2);border-bottom-width:2px;border-radius:4px;padding:1px 6px;font-family:var(--pix);font-size:.65rem;color:var(--text2)}
+.kbd-hint{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:.6rem;font-size:.78rem;color:var(--mut)}
+.kbd{background:var(--surface2);border:1px solid var(--border2);border-bottom-width:2px;border-radius:5px;padding:2px 9px;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:.85rem;font-weight:700;color:var(--text);line-height:1.2;min-width:22px;text-align:center;display:inline-block}
 
 /* ACTIVITY */
 .act{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.75rem 1rem;margin-top:1rem;margin-bottom:1.25rem}
@@ -262,8 +265,8 @@ code{background:var(--surface3);color:var(--gold);padding:1px 6px;border-radius:
 @keyframes tout{to{opacity:0;transform:translateX(20px)}}
 
 /* ACHIEVEMENT POPUP */
-.ap{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120%);display:flex;align-items:center;gap:.85rem;background:linear-gradient(135deg,var(--goldBg),var(--surface2));border:1px solid var(--gold);border-radius:14px;padding:.75rem 1.1rem .75rem .8rem;box-shadow:0 12px 40px rgba(255,200,87,.3),0 0 60px rgba(255,200,87,.15);z-index:1500;transition:transform .5s cubic-bezier(.2,1.4,.4,1);max-width:calc(100vw - 2rem)}
-.ap.show{transform:translateX(-50%) translateY(0)}
+.ap{position:fixed;bottom:2rem;left:50%;transform:translate(-50%,calc(100% + 4rem));opacity:0;pointer-events:none;display:flex;align-items:center;gap:.85rem;background:linear-gradient(135deg,var(--goldBg),var(--surface2));border:1px solid var(--gold);border-radius:14px;padding:.75rem 1.1rem .75rem .8rem;box-shadow:0 12px 40px rgba(255,200,87,.3),0 0 60px rgba(255,200,87,.15);z-index:1500;transition:transform .5s cubic-bezier(.2,1.4,.4,1),opacity .3s;max-width:calc(100vw - 2rem)}
+.ap.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 .ap-icon{width:40px;height:40px;border-radius:10px;background:var(--gold);color:#1a1208;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;animation:wiggle 1.5s ease-in-out infinite}
 .ap-body{line-height:1.2}
 .ap-label{font-family:var(--pix);font-size:.6rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase}
@@ -881,10 +884,11 @@ async function fetchStatus(){
       const list=d.players&&d.players.list?d.players.list:[];
       diffPlayers(list);
       cnt.textContent=on+' online';
-      if(on>0&&list.length>0){
+      if(on>0){
         grid.innerHTML='';
-        list.slice(0,8).forEach(p=>{
-          const n=p.name||p;
+        const shown=Math.min(list.length,8);
+        for(let i=0;i<shown;i++){
+          const p=list[i], n=p.name||p;
           const card=document.createElement('div');
           card.className='cm-card';
           const img=document.createElement('img');
@@ -895,16 +899,17 @@ async function fetchStatus(){
           sp.className='cm-name'; sp.textContent=n;
           card.appendChild(img); card.appendChild(sp);
           grid.appendChild(card);
-        });
-        if(list.length>8){
+        }
+        const missing=on-shown;
+        if(missing>0){
           const more=document.createElement('div');
-          more.className='cm-card';
-          more.innerHTML='<span class="cm-name">+'+(list.length-8)+' weitere</span>';
+          more.className='cm-card cm-anon';
+          let txt;
+          if(shown===0) txt=on+(on===1?' spieler online':' spieler online');
+          else txt='+'+missing+(missing===1?' weiterer':' weitere');
+          more.innerHTML='<span class="cm-anon-icon">?</span><span class="cm-name">'+txt+'</span>';
           grid.appendChild(more);
         }
-      }else if(on>0){
-        // online aber keine namen (z.B. anonym)
-        grid.innerHTML='<div class="crew-empty"><div class="ce-mascot">👤</div><div class="ce-text">'+on+' spieler online (namen versteckt)</div></div>';
       }else{
         grid.innerHTML='<div class="crew-empty"><div class="ce-mascot">😴</div><div class="ce-text">grad pennen alle. einer könnte ja kurz online gehen 👀</div></div>';
       }
